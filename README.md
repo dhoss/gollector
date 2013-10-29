@@ -266,7 +266,7 @@ a payload that looks like:
 ```json
 { 
   "Name": "record parameter",
-  "Value": "arbitrary json value"
+  "Value": { "here's a hash": [ "of", "array", "of", "string" ] }
 }
 ```
 
@@ -287,6 +287,9 @@ For a given metric named "record_example":
   "Params": "record_example"
 }
 ```
+
+Note, again, that the "Params" section's value and the key, "record_example",
+are the same.
 
 #### record example usage
 
