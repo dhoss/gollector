@@ -63,7 +63,7 @@ func Init(facility string, priority string) *Logger {
 		facility: facility,
 	}
 
-	log.writer, err = syslog.New(facilityMap[facility]|priorityMap["info"], "cirgonus")
+	log.writer, err = syslog.New(facilityMap[facility]|priorityMap["info"], "gollector")
 
 	if err != nil {
 		panic(fmt.Sprintf("Cannot connect to syslog: %s", err))

@@ -24,7 +24,7 @@ type WebHandler struct {
 }
 
 func (wh *WebHandler) showUnauthorized(w http.ResponseWriter) {
-	w.Header().Add("WWW-Authenticate", "Basic realm=\"cirgonus\"")
+	w.Header().Add("WWW-Authenticate", "Basic realm=\"gollector\"")
 	w.WriteHeader(401)
 }
 

@@ -1,24 +1,24 @@
-all: cirgonus cstat
+all: gollector gstat
 
 clean:
-	rm -f cirgonus cstat
+	rm -f gollector gstat
 
-cirgonus: cirgonus.go src/*/*/*.go src/*/*.go
-	GOPATH=$(PWD) go build cirgonus.go
+gollector: gollector.go src/*/*/*.go src/*/*.go
+	GOPATH=$(PWD) go build gollector.go
 
-cstat: cstat.go
-	GOPATH=$(PWD) go build cstat.go
+gstat: gstat.go
+	GOPATH=$(PWD) go build gstat.go
 
-cirgonus.tar.gz: cirgonus cstat
-	tar cvzf cirgonus.tar.gz cirgonus cstat >/dev/null
+gollector.tar.gz: gollector gstat
+	tar cvzf gollector.tar.gz gollector gstat >/dev/null
 
-dist: all cirgonus.tar.gz clean
+dist: all gollector.tar.gz clean
 
 distclean: clean
-	rm -f cirgonus.tar.gz
+	rm -f gollector.tar.gz
 
-run: cirgonus stop
-	sh -c './cirgonus test.json &'
+run: gollector stop
+	sh -c './gollector test.json &'
 
 stop: 
-	(pkill cirgonus || exit 0)
+	(pkill gollector || exit 0)
