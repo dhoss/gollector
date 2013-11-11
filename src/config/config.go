@@ -134,8 +134,8 @@ func loadFromFile(configFile string) (cc types.CirconusConfig, err error) {
 func Generate() {
 	config := types.CirconusConfig{
 		Listen:       ":8000",
-		Username:     "cirgonus",
-		Password:     "cirgonus",
+		Username:     "gollector",
+		Password:     "gollector",
 		Facility:     "daemon",
 		LogLevel:     "info",
 		PollInterval: 5,
