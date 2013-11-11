@@ -1,3 +1,10 @@
+# Rename (11/11/2013)
+
+Cirgonus is now known as Gollector! All naughty bits have been changed to
+reflect this, including the name of the repository.
+
+Since there are no new features, no version has been created.
+
 # 0.4.0 (10/24/2013)
 
 All of these features are covered in the README documentation.
