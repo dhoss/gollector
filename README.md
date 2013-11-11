@@ -6,6 +6,10 @@ flexibility of the JSON responses leads to many monitoring possibilities, such
 as the included 'gstat', which is an n-host iostat-alike for all metrics
 gollector is collecting.
 
+Here's a graph generated in Circonus from data provided by Gollector:
+
+![An Example](graph.png)
+
 Most of the built-in collectors are linux-only for now, and probably the future
 unless pull requests happen. Many plugins very likely require a 3.0 or later
 kernel release due to dependence on system structs and other deep voodoo.
