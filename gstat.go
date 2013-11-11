@@ -46,8 +46,8 @@ func main() {
 	var opts options
 
 	flag.StringVar(&opts.hosts, "hosts", "", "comma-separated host list")
-	flag.StringVar(&opts.username, "username", "cirgonus", "username to use for authentication")
-	flag.StringVar(&opts.password, "password", "cirgonus", "password to use for authentication")
+	flag.StringVar(&opts.username, "username", "gollector", "username to use for authentication")
+	flag.StringVar(&opts.password, "password", "gollector", "password to use for authentication")
 	flag.UintVar(&opts.port, "port", 8000, "port to use for connection")
 	flag.StringVar(&opts.metric, "metric", "", "comma-separated list of metrics to fetch for polling")
 	flag.Parse()
@@ -63,7 +63,7 @@ func main() {
 	}
 
 	if opts.username == "" || opts.password == "" {
-		fmt.Println("Please supply a username and password for authentication to the cirgonus agent(s)")
+		fmt.Println("Please supply a username and password for authentication to the gollector agent(s)")
 		os.Exit(1)
 	}
 
