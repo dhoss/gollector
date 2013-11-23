@@ -46,7 +46,6 @@ var Detectors = map[string]func() []string{
 	"load_average": func() []string { return []string{} },
 	"cpu_usage":    func() []string { return []string{} },
 	"mem_usage":    func() []string { return []string{} },
-	"command":      func() []string { return []string(nil) },
 	"net_usage":    net_usage.Detect,
 	"io_usage":     io_usage.Detect,
 	"fs_usage":     fs_usage.Detect,
