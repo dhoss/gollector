@@ -13,6 +13,9 @@ import (
 	"plugins/record"
 )
 
+type PluginResult interface{}
+type PluginResultCollection map[string]PluginResult
+
 var Plugins = map[string]func(interface{}, *logger.Logger) interface{}{
 	"load_average": load_average.GetMetric,
 	"cpu_usage":    cpu_usage.GetMetric,

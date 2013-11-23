@@ -8,17 +8,14 @@ import (
 	"types"
 )
 
-type PluginResult interface{}
-type PluginResultCollection map[string]PluginResult
-
 var rwmutex sync.RWMutex
-var PluginResults PluginResultCollection
+var PluginResults types.PluginResultCollection
 
-func GetResult(name string) PluginResult {
+func GetResult(name string) types.PluginResult {
 	return PluginResults[name]
 }
 
-func GetResults() PluginResultCollection {
+func GetResults() types.PluginResultCollection {
 	return PluginResults
 }
 
@@ -43,7 +40,7 @@ func AllResults(config types.CirconusConfig, log *logger.Logger) {
 	rwmutex.Unlock()
 }
 
-func Plugin(name string, config types.CirconusConfig, log *logger.Logger) PluginResult {
+func Plugin(name string, config types.CirconusConfig, log *logger.Logger) types.PluginResult {
 	log.Log("debug", fmt.Sprintf("Plugin %s Requested", name))
 
 	item, ok := config.Plugins[name]
@@ -60,8 +57,8 @@ func Plugin(name string, config types.CirconusConfig, log *logger.Logger) Plugin
 	return nil
 }
 
-func AllPlugins(config types.CirconusConfig, log *logger.Logger) PluginResultCollection {
-	retval := make(PluginResultCollection)
+func AllPlugins(config types.CirconusConfig, log *logger.Logger) types.PluginResultCollection {
+	retval := make(types.PluginResultCollection)
 
 	log.Log("debug", "Querying All Plugins")
 
