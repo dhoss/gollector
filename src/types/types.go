@@ -36,10 +36,12 @@ single parameters passed to the Params section of each json. Each element of
 the array is treated as a Params line and passed straight to the generated
 json. A params of "" is treated as nil because go is kind of stupid about nils.
 
-nil means to not include the monitor. Command is a good example of a monitor we
-don't want to ever try to detect.
+Returning nil means to not include the monitor plugin, but it is wiser to just
+exclude the plugin from this map if we never want to use it. This is
+principally for those who would dispatch to a detection method.
 
-In the load average case, our params are "", but we want to always include it.
+An example from below: In the load average case, our params are "", but we want
+to always include it.
 */
 
 var Detectors = map[string]func() []string{
