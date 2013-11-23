@@ -13,6 +13,9 @@ import (
 	"plugins/record"
 )
 
+type PluginResult interface{}
+type PluginResultCollection map[string]PluginResult
+
 var Plugins = map[string]func(interface{}, *logger.Logger) interface{}{
 	"load_average": load_average.GetMetric,
 	"cpu_usage":    cpu_usage.GetMetric,
@@ -33,17 +36,18 @@ single parameters passed to the Params section of each json. Each element of
 the array is treated as a Params line and passed straight to the generated
 json. A params of "" is treated as nil because go is kind of stupid about nils.
 
-nil means to not include the monitor. Command is a good example of a monitor we
-don't want to ever try to detect.
+Returning nil means to not include the monitor plugin, but it is wiser to just
+exclude the plugin from this map if we never want to use it. This is
+principally for those who would dispatch to a detection method.
 
-In the load average case, our params are "", but we want to always include it.
+An example from below: In the load average case, our params are "", but we want
+to always include it.
 */
 
 var Detectors = map[string]func() []string{
 	"load_average": func() []string { return []string{} },
 	"cpu_usage":    func() []string { return []string{} },
 	"mem_usage":    func() []string { return []string{} },
-	"command":      func() []string { return []string(nil) },
 	"net_usage":    net_usage.Detect,
 	"io_usage":     io_usage.Detect,
 	"fs_usage":     fs_usage.Detect,
@@ -54,6 +58,8 @@ type ConfigMap struct {
 	Params interface{}
 }
 
+type PluginConfig map[string]ConfigMap
+
 type CirconusConfig struct {
 	Listen       string
 	Username     string
@@ -61,5 +67,5 @@ type CirconusConfig struct {
 	Facility     string
 	LogLevel     string
 	PollInterval uint
-	Plugins      map[string]ConfigMap
+	Plugins      PluginConfig
 }

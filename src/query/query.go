@@ -9,15 +9,14 @@ import (
 )
 
 var rwmutex sync.RWMutex
-var PluginResults *map[string]interface{}
+var PluginResults types.PluginResultCollection
 
-func GetResult(name string) interface{} {
-	result := *PluginResults
-	return result[name]
+func GetResult(name string) types.PluginResult {
+	return PluginResults[name]
 }
 
-func GetResults() map[string]interface{} {
-	return *PluginResults
+func GetResults() types.PluginResultCollection {
+	return PluginResults
 }
 
 func ResultPoller(config types.CirconusConfig, log *logger.Logger) {
@@ -41,25 +40,25 @@ func AllResults(config types.CirconusConfig, log *logger.Logger) {
 	rwmutex.Unlock()
 }
 
-func Plugin(name string, config types.CirconusConfig, log *logger.Logger) interface{} {
+func Plugin(name string, config types.CirconusConfig, log *logger.Logger) types.PluginResult {
 	log.Log("debug", fmt.Sprintf("Plugin %s Requested", name))
 
 	item, ok := config.Plugins[name]
 
 	if ok {
-		_, ok := types.Plugins[item.Type]
+		t, ok := types.Plugins[item.Type]
 
 		if ok {
 			log.Log("debug", fmt.Sprintf("Plugin %s exists, running", name))
-			return types.Plugins[item.Type](item.Params, log)
+			return t(item.Params, log)
 		}
 	}
 
 	return nil
 }
 
-func AllPlugins(config types.CirconusConfig, log *logger.Logger) *map[string]interface{} {
-	retval := make(map[string]interface{})
+func AllPlugins(config types.CirconusConfig, log *logger.Logger) types.PluginResultCollection {
+	retval := make(types.PluginResultCollection)
 
 	log.Log("debug", "Querying All Plugins")
 
@@ -69,5 +68,5 @@ func AllPlugins(config types.CirconusConfig, log *logger.Logger) *map[string]int
 
 	log.Log("debug", "Done Querying All Plugins")
 
-	return &retval
+	return retval
 }

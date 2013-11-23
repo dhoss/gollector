@@ -52,18 +52,18 @@ var priorityCallMap = map[string]func(*syslog.Writer, string) error{
 
 type Logger struct {
 	LogLevel string
-	facility string
+	Facility string
 	writer   *syslog.Writer
 }
 
 func Init(facility string, priority string) *Logger {
 	var err error
 	log := &Logger{
-		LogLevel: priority, // FIXME make this controllable over the tubes
-		facility: facility,
+		LogLevel: priority,
+		Facility: facility,
 	}
 
-	log.writer, err = syslog.New(facilityMap[facility]|priorityMap["info"], "gollector")
+	log.writer, err = syslog.New(facilityMap[facility]|priorityMap[priority], "gollector")
 
 	if err != nil {
 		panic(fmt.Sprintf("Cannot connect to syslog: %s", err))

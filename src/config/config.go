@@ -10,22 +10,8 @@ import (
 	"types"
 )
 
-func Load(config string) (types.CirconusConfig, error) {
-	stat, err := os.Stat(config)
-
-	if err != nil {
-		return types.CirconusConfig{}, err
-	}
-
-	if stat.IsDir() {
-		return loadFromDir(config)
-	} else {
-		return loadFromFile(config)
-	}
-}
-
 func loadFromDir(configFile string) (cc types.CirconusConfig, err error) {
-	plugins := make(map[string]types.ConfigMap)
+	plugins := make(types.PluginConfig)
 	var found_main bool
 
 	dir, err := os.Open(configFile)
@@ -131,6 +117,20 @@ func loadFromFile(configFile string) (cc types.CirconusConfig, err error) {
 	return cc, err
 }
 
+func Load(config string) (types.CirconusConfig, error) {
+	stat, err := os.Stat(config)
+
+	if err != nil {
+		return types.CirconusConfig{}, err
+	}
+
+	if stat.IsDir() {
+		return loadFromDir(config)
+	} else {
+		return loadFromFile(config)
+	}
+}
+
 func Generate() {
 	config := types.CirconusConfig{
 		Listen:       ":8000",
@@ -139,7 +139,7 @@ func Generate() {
 		Facility:     "daemon",
 		LogLevel:     "info",
 		PollInterval: 5,
-		Plugins:      make(map[string]types.ConfigMap),
+		Plugins:      make(types.PluginConfig),
 	}
 
 	for key, value := range types.Detectors {
