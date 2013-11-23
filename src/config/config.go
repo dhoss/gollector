@@ -10,20 +10,6 @@ import (
 	"types"
 )
 
-func Load(config string) (types.CirconusConfig, error) {
-	stat, err := os.Stat(config)
-
-	if err != nil {
-		return types.CirconusConfig{}, err
-	}
-
-	if stat.IsDir() {
-		return loadFromDir(config)
-	} else {
-		return loadFromFile(config)
-	}
-}
-
 func loadFromDir(configFile string) (cc types.CirconusConfig, err error) {
 	plugins := make(types.PluginConfig)
 	var found_main bool
@@ -129,6 +115,20 @@ func loadFromFile(configFile string) (cc types.CirconusConfig, err error) {
 	}
 
 	return cc, err
+}
+
+func Load(config string) (types.CirconusConfig, error) {
+	stat, err := os.Stat(config)
+
+	if err != nil {
+		return types.CirconusConfig{}, err
+	}
+
+	if stat.IsDir() {
+		return loadFromDir(config)
+	} else {
+		return loadFromFile(config)
+	}
 }
 
 func Generate() {
