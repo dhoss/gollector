@@ -9,15 +9,14 @@ import (
 )
 
 var rwmutex sync.RWMutex
-var PluginResults *map[string]interface{}
+var PluginResults map[string]interface{}
 
 func GetResult(name string) interface{} {
-	result := *PluginResults
-	return result[name]
+	return PluginResults[name]
 }
 
 func GetResults() map[string]interface{} {
-	return *PluginResults
+	return PluginResults
 }
 
 func ResultPoller(config types.CirconusConfig, log *logger.Logger) {
@@ -58,7 +57,7 @@ func Plugin(name string, config types.CirconusConfig, log *logger.Logger) interf
 	return nil
 }
 
-func AllPlugins(config types.CirconusConfig, log *logger.Logger) *map[string]interface{} {
+func AllPlugins(config types.CirconusConfig, log *logger.Logger) map[string]interface{} {
 	retval := make(map[string]interface{})
 
 	log.Log("debug", "Querying All Plugins")
@@ -69,5 +68,5 @@ func AllPlugins(config types.CirconusConfig, log *logger.Logger) *map[string]int
 
 	log.Log("debug", "Done Querying All Plugins")
 
-	return &retval
+	return retval
 }
