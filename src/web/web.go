@@ -13,6 +13,12 @@ import (
 	"types"
 )
 
+var httpMethodDispatch = map[string]func(*WebHandler, http.ResponseWriter, *http.Request){
+	"GET":  (*WebHandler).DispatchGET,
+	"POST": (*WebHandler).DispatchPOST,
+	"PUT":  (*WebHandler).DispatchPUT,
+}
+
 type Request struct {
 	Name  string
 	Value interface{}
@@ -120,14 +126,7 @@ func (wh *WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	switch r.Method {
-	case "GET":
-		wh.DispatchGET(w, r)
-	case "POST":
-		wh.DispatchPOST(w, r)
-	case "PUT":
-		wh.DispatchPUT(w, r)
-	}
+	httpMethodDispatch[r.Method](wh, w, r)
 }
 
 func Start(listen string, config types.CirconusConfig, log *logger.Logger) error {
