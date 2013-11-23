@@ -66,6 +66,51 @@ func (wh *WebHandler) readAndUnmarshal(w http.ResponseWriter, r *http.Request, r
 	return req
 }
 
+func (wh *WebHandler) DispatchGET(w http.ResponseWriter, r *http.Request) {
+	wh.Logger.Log("debug", "Handling GET")
+
+	out, err := json.Marshal(query.GetResults())
+
+	if err != nil {
+		wh.Logger.Log("crit", fmt.Sprintf("Error marshalling all metrics: %s", err))
+		w.WriteHeader(500)
+	} else {
+		wh.Logger.Log("debug", fmt.Sprintf("Writing all metrics to %s", r.RemoteAddr))
+		w.Write(out)
+	}
+}
+
+func (wh *WebHandler) DispatchPOST(w http.ResponseWriter, r *http.Request) {
+	req := wh.readAndUnmarshal(w, r, "POST")
+
+	if req.Name != "" {
+		out, err := json.Marshal(query.GetResult(req.Name))
+		if err != nil {
+			wh.Logger.Log("crit", fmt.Sprintf("Error gathering metrics for %s: %s", req.Name, err))
+			w.WriteHeader(500)
+		} else {
+			wh.Logger.Log("debug", fmt.Sprintf("Handling POST for metric '%s'", req.Name))
+			w.Write(out)
+		}
+	} else {
+		wh.Logger.Log("debug", fmt.Sprintf("404ing because no payload from %s", r.RemoteAddr))
+		w.WriteHeader(404)
+	}
+}
+
+func (wh *WebHandler) DispatchPUT(w http.ResponseWriter, r *http.Request) {
+	req := wh.readAndUnmarshal(w, r, "PUT")
+	if req.Name == "" {
+		wh.Logger.Log("crit", fmt.Sprintf("Cannot write record with an empty value"))
+		w.WriteHeader(500)
+	} else {
+		record.RecordMetric(req.Name, req.Value, wh.Logger)
+		wh.Logger.Log("debug", "here")
+		w.WriteHeader(200)
+		w.Write([]byte("OK"))
+	}
+}
+
 func (wh *WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
@@ -77,52 +122,11 @@ func (wh *WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case "GET":
-		{
-			wh.Logger.Log("debug", "Handling GET")
-
-			out, err := json.Marshal(query.GetResults())
-
-			if err != nil {
-				wh.Logger.Log("crit", fmt.Sprintf("Error marshalling all metrics: %s", err))
-				w.WriteHeader(500)
-			} else {
-				wh.Logger.Log("debug", fmt.Sprintf("Writing all metrics to %s", r.RemoteAddr))
-				w.Write(out)
-			}
-
-			return
-		}
+		wh.DispatchGET(w, r)
 	case "POST":
-		{
-			req := wh.readAndUnmarshal(w, r, "POST")
-
-			if req.Name != "" {
-				out, err := json.Marshal(query.GetResult(req.Name))
-				if err != nil {
-					wh.Logger.Log("crit", fmt.Sprintf("Error gathering metrics for %s: %s", req.Name, err))
-					w.WriteHeader(500)
-				} else {
-					wh.Logger.Log("debug", fmt.Sprintf("Handling POST for metric '%s'", req.Name))
-					w.Write(out)
-				}
-			} else {
-				wh.Logger.Log("debug", fmt.Sprintf("404ing because no payload from %s", r.RemoteAddr))
-				w.WriteHeader(404)
-			}
-		}
+		wh.DispatchPOST(w, r)
 	case "PUT":
-		{
-			req := wh.readAndUnmarshal(w, r, "PUT")
-			if req.Name == "" {
-				wh.Logger.Log("crit", fmt.Sprintf("Cannot write record with an empty value"))
-				w.WriteHeader(500)
-			} else {
-				record.RecordMetric(req.Name, req.Value, wh.Logger)
-				wh.Logger.Log("debug", "here")
-				w.WriteHeader(200)
-				w.Write([]byte("OK"))
-			}
-		}
+		wh.DispatchPUT(w, r)
 	}
 }
 
