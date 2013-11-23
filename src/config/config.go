@@ -25,7 +25,7 @@ func Load(config string) (types.CirconusConfig, error) {
 }
 
 func loadFromDir(configFile string) (cc types.CirconusConfig, err error) {
-	plugins := make(types.PluginMap)
+	plugins := make(types.PluginConfig)
 	var found_main bool
 
 	dir, err := os.Open(configFile)
@@ -139,7 +139,7 @@ func Generate() {
 		Facility:     "daemon",
 		LogLevel:     "info",
 		PollInterval: 5,
-		Plugins:      make(types.PluginMap),
+		Plugins:      make(types.PluginConfig),
 	}
 
 	for key, value := range types.Detectors {

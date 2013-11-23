@@ -58,7 +58,7 @@ type ConfigMap struct {
 	Params interface{}
 }
 
-type PluginMap map[string]ConfigMap
+type PluginConfig map[string]ConfigMap
 
 type CirconusConfig struct {
 	Listen       string
@@ -67,5 +67,5 @@ type CirconusConfig struct {
 	Facility     string
 	LogLevel     string
 	PollInterval uint
-	Plugins      PluginMap
+	Plugins      PluginConfig
 }
