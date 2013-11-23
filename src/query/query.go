@@ -46,11 +46,11 @@ func Plugin(name string, config types.CirconusConfig, log *logger.Logger) interf
 	item, ok := config.Plugins[name]
 
 	if ok {
-		_, ok := types.Plugins[item.Type]
+		t, ok := types.Plugins[item.Type]
 
 		if ok {
 			log.Log("debug", fmt.Sprintf("Plugin %s exists, running", name))
-			return types.Plugins[item.Type](item.Params, log)
+			return t(item.Params, log)
 		}
 	}
 
