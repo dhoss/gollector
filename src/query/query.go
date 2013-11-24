@@ -9,14 +9,14 @@ import (
 )
 
 var rwmutex sync.RWMutex
-var PluginResults types.PluginResultCollection
+var pluginResults types.PluginResultCollection
 
 func GetResult(name string) types.PluginResult {
-	return PluginResults[name]
+	return pluginResults[name]
 }
 
 func GetResults() types.PluginResultCollection {
-	return PluginResults
+	return pluginResults
 }
 
 func ResultPoller(config types.CirconusConfig, log *logger.Logger) {
@@ -25,19 +25,13 @@ func ResultPoller(config types.CirconusConfig, log *logger.Logger) {
 
 	for {
 		start := time.Now()
-		AllResults(config, log)
+		AllPlugins(config, log)
 		duration := time.Now().Sub(start)
 
 		if duration < interval_duration {
 			time.Sleep(interval_duration - duration)
 		}
 	}
-}
-
-func AllResults(config types.CirconusConfig, log *logger.Logger) {
-	rwmutex.Lock()
-	PluginResults = AllPlugins(config, log)
-	rwmutex.Unlock()
 }
 
 func Plugin(name string, config types.CirconusConfig, log *logger.Logger) types.PluginResult {
@@ -57,16 +51,19 @@ func Plugin(name string, config types.CirconusConfig, log *logger.Logger) types.
 	return nil
 }
 
-func AllPlugins(config types.CirconusConfig, log *logger.Logger) types.PluginResultCollection {
-	retval := make(types.PluginResultCollection)
+func AllPlugins(config types.CirconusConfig, log *logger.Logger) {
+	rwmutex.Lock()
+	defer rwmutex.Unlock()
+
+	if pluginResults == nil {
+		pluginResults = make(types.PluginResultCollection)
+	}
 
 	log.Log("debug", "Querying All Plugins")
 
 	for key, _ := range config.Plugins {
-		retval[key] = Plugin(key, config, log)
+		pluginResults[key] = Plugin(key, config, log)
 	}
 
 	log.Log("debug", "Done Querying All Plugins")
-
-	return retval
 }
