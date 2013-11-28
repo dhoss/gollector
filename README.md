@@ -38,7 +38,7 @@ $ ./gstat -hosts localhost -metric "load_average"
 Should yield an array of floats that contain your current load average.
 
 ```bash
-$ curl http://localhost:8000/
+$ curl http://gollector:gollector@localhost:8000/
 ```
 
 Will yield a json object of all current metrics.
