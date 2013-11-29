@@ -12,7 +12,7 @@ func GetMetric(params interface{}, log *logger.Logger) interface{} {
 	log.Log("debug", "Reading /proc/meminfo")
 	content, err := ioutil.ReadFile("/proc/meminfo")
 
-	var total, buffers, cached, free int
+	var total, buffers, cached, free, swap_total, swap_free int
 
 	if err != nil {
 		log.Log("crit", fmt.Sprintf("While processing the mem_usage package: %s", err))
@@ -34,6 +34,10 @@ func GetMetric(params interface{}, log *logger.Logger) interface{} {
 			cached, err = strconv.Atoi(parts[id])
 		case "Buffers:":
 			buffers, err = strconv.Atoi(parts[id])
+		case "SwapTotal:":
+			swap_total, err = strconv.Atoi(parts[id])
+		case "SwapFree:":
+			swap_free, err = strconv.Atoi(parts[id])
 		}
 
 		if err != nil {
@@ -43,8 +47,10 @@ func GetMetric(params interface{}, log *logger.Logger) interface{} {
 	}
 
 	return map[string]interface{}{
-		"Total": total * 1024,
-		"Free":  (buffers + cached + free) * 1024,
-		"Used":  total*1024 - ((buffers + cached + free) * 1024),
+		"Total":      total * 1024,
+		"Free":       (buffers + cached + free) * 1024,
+		"Used":       total*1024 - ((buffers + cached + free) * 1024),
+		"Swap Total": swap_total * 1024,
+		"Swap Free":  swap_free * 1024,
 	}
 }
