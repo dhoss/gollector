@@ -1,3 +1,12 @@
+# 0.5.0
+
+Many Refactors. All Bugs & Features (below) are covered in the wiki. This is
+the first release with the name "Gollector", as well.
+
+* `mem_usage` now reports swap totals.
+* LogLevel in the configuration is now properly used.
+* `json_poll` now can use a unix socket.
+
 # Rename (11/11/2013)
 
 Cirgonus is now known as Gollector! All naughty bits have been changed to
@@ -19,7 +28,7 @@ All of these features are covered in the README documentation.
 All of these features are covered in the README documentation.
 
 * cstat is now able to query multiple metrics at once from each host.
-* The fs_usage plugin reports on usage stats for a mountpoint, and its read-only status.
+* The `fs_usage` plugin reports on usage stats for a mountpoint, and its read-only status.
 
 # 0.2.0 (10/9/2013)
 
