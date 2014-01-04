@@ -10,7 +10,7 @@ import (
 
 func checkUsage() {
 	if len(os.Args) < 2 {
-		fmt.Println("usage:", os.Args[0], "<config file> or 'generate'")
+		fmt.Println("usage:", os.Args[0], "<config file or directory> or 'generate'")
 		os.Exit(2)
 	}
 }
