@@ -33,6 +33,9 @@ var Plugins = map[string]func(interface{}, *logger.Logger) interface{}{
 }
 
 /*
+
+FIXME this comment is wrong and should be replaced
+
 How this works:
 
 Basically, interface is expected to be nil or an array of strings which are
