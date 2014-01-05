@@ -11,6 +11,7 @@ import (
 	"plugins/mem_usage"
 	"plugins/net_usage"
 	"plugins/record"
+	"plugins/socket_usage"
 )
 
 type PluginResult interface{}
@@ -26,6 +27,7 @@ var Plugins = map[string]func(interface{}, *logger.Logger) interface{}{
 	"record":       record.GetMetric,
 	"fs_usage":     fs_usage.GetMetric,
 	"json_poll":    json_poll.GetMetric,
+	"socket_usage": socket_usage.GetMetric,
 }
 
 /*
