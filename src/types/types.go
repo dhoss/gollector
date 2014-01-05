@@ -11,6 +11,7 @@ import (
 	"plugins/mem_usage"
 	"plugins/net_usage"
 	"plugins/process_count"
+	"plugins/process_mem_usage"
 	"plugins/record"
 	"plugins/socket_usage"
 )
@@ -19,17 +20,18 @@ type PluginResult interface{}
 type PluginResultCollection map[string]PluginResult
 
 var Plugins = map[string]func(interface{}, *logger.Logger) interface{}{
-	"load_average":  load_average.GetMetric,
-	"cpu_usage":     cpu_usage.GetMetric,
-	"mem_usage":     mem_usage.GetMetric,
-	"command":       command.GetMetric,
-	"net_usage":     net_usage.GetMetric,
-	"io_usage":      io_usage.GetMetric,
-	"record":        record.GetMetric,
-	"fs_usage":      fs_usage.GetMetric,
-	"json_poll":     json_poll.GetMetric,
-	"socket_usage":  socket_usage.GetMetric,
-	"process_count": process_count.GetMetric,
+	"load_average":      load_average.GetMetric,
+	"cpu_usage":         cpu_usage.GetMetric,
+	"mem_usage":         mem_usage.GetMetric,
+	"command":           command.GetMetric,
+	"net_usage":         net_usage.GetMetric,
+	"io_usage":          io_usage.GetMetric,
+	"record":            record.GetMetric,
+	"fs_usage":          fs_usage.GetMetric,
+	"json_poll":         json_poll.GetMetric,
+	"socket_usage":      socket_usage.GetMetric,
+	"process_count":     process_count.GetMetric,
+	"process_mem_usage": process_mem_usage.GetMetric,
 }
 
 /*
