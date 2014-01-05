@@ -1,4 +1,4 @@
-# 0.5.0
+# 0.5.0 (1/4/2013)
 
 Many Refactors. All Bugs & Features (below) are covered in the wiki. This is
 the first release with the name "Gollector", as well.
