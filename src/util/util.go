@@ -1,9 +1,10 @@
 package util
 
 import (
+	"io/ioutil"
 	"logger"
 	"os"
-	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -14,39 +15,65 @@ import (
  * for.
  */
 
-func GetPids(process_name string, log *logger.Logger) []string {
+func GetPids(process string, log *logger.Logger) []string {
 	pids := []string{}
 
-	f := func(path string, info os.FileInfo, err error) error {
-		// we don't care about errors because we shouldn't be root
-		// so most of the errors here just return nil to keep walk going
-		if err != nil {
-			return nil
-		}
+	dir, err := os.Open("/proc")
 
-		parts := strings.Split(path, "/")
-
-		if len(parts) != 4 || parts[3] != "exe" {
-			return nil
-		}
-
-		link, err := os.Readlink(path)
-
-		if err != nil {
-			return nil
-		}
-
-		if link == process_name {
-			pids = append(pids, parts[2])
-		}
-
+	if err != nil {
+		log.Log("crit", "Could not open /proc for reading: "+err.Error())
 		return nil
 	}
 
-	err := filepath.Walk("/proc", f)
+	defer dir.Close()
+
+	proc_files, err := dir.Readdirnames(0)
 
 	if err != nil {
-		log.Log("info", "Error while trying to walk /proc: "+err.Error())
+		log.Log("crit", "Could not read directory names from /proc: "+err.Error())
+		return nil
+	}
+
+	all_pids := []string{}
+	// XXX totally cheating here -- the only all-numeric filenames in this dir
+	// will be pid directories. This should be faster than 4 bajillion stat
+	// calls (that I'd have to do this to anyway).
+	for _, fn := range proc_files {
+		_, err := strconv.Atoi(fn)
+		if err == nil {
+			all_pids = append(all_pids, fn)
+		}
+	}
+
+	for _, pid := range all_pids {
+		path := "/proc/" + pid + "/cmdline"
+		file, err := os.Open(path)
+
+		if err != nil {
+			log.Log("crit", "Could not open "+path+": "+err.Error())
+			return nil
+		}
+
+		defer file.Close()
+
+		cmdline, err := ioutil.ReadAll(file)
+
+		if err != nil {
+			log.Log("crit", "Could not read from "+path+": "+err.Error())
+			return nil
+		}
+
+		cmdline_parts := strings.Split(string(cmdline), "\x00")
+
+		if len(cmdline_parts) > 1 {
+			cmdline_parts = cmdline_parts[0 : len(cmdline_parts)-1]
+		}
+
+		string_cmd := strings.Join(cmdline_parts, " ")
+
+		if string_cmd == process {
+			pids = append(pids, pid)
+		}
 	}
 
 	return pids
