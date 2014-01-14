@@ -1,3 +1,11 @@
+# 0.6.0 (1/13/2013)
+
+Three new plugins:
+
+* `socket_usage`: report on the number of sockets open for a given protocol
+* `process_count`: count the number of command lines that are running
+* `process_mem_usage`: count the amount of memory a given command line is using across all processes
+
 # 0.5.0 (1/4/2013)
 
 Many Refactors. All Bugs & Features (below) are covered in the wiki. This is
