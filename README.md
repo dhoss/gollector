@@ -14,7 +14,9 @@ Most of the built-in collectors are linux-only for now, and probably the future
 unless pull requests happen. Many plugins very likely require a 3.0 or later
 kernel release due to dependence on system structs and other deep voodoo.
 
-Gollector does not need to be run as root to collect its metrics.
+Gollector does not need to be run as root to collect its metrics. For things
+that need root, or work with additional data sources (such as data stores),
+check out the sister project [Gollector Monitors](https://github.com/erikh/gollector-monitors).
 
 Unlike other collectors that use fat tools like `netstat` and `df` which can
 take expensive resources on loaded systems, Gollector opts to use the C
