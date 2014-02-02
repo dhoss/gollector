@@ -1,3 +1,8 @@
+# 0.6.1 (2/2/2013)
+
+* Fix a bug where json\_poll would keep sockets open forever, causing FD
+  leakage.
+
 # 0.6.0 (1/13/2013)
 
 Three new plugins:
