@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"net/url"
+	"os"
 	"reflect"
 	"regexp"
 	"strings"
@@ -57,13 +59,14 @@ func navigateJSONMap(conn net.Conn, orig_key string, json_rep map[string]interfa
 
 func main() {
 	connect := flag.String("connect", "localhost:2003", "Graphite plaintext protocol to emit to")
-	gollector_url := flag.String(
-		"gollector-url",
-		"http://gollector:gollector@localhost:8000",
-		"Gollector endpoint to read from",
-	)
-
 	interval := flag.Int("interval", 60, "Frequency of poll (in seconds")
+
+	flag.Parse()
+
+	if len(flag.Args()) < 1 {
+		os.Stderr.WriteString("Must supply at least one gollector endpoint as a url")
+		os.Exit(1)
+	}
 
 	conn, err := net.Dial("tcp", *connect)
 
@@ -71,31 +74,46 @@ func main() {
 		panic(err)
 	}
 
+	for _, gollector_url := range flag.Args() {
+		go func() {
+			for {
+
+				this_url, err := url.Parse(gollector_url)
+
+				if err != nil {
+					panic(err)
+				}
+
+				resp, err := http.Get(gollector_url)
+
+				if err != nil {
+					time.Sleep(1 * time.Second)
+					continue
+				}
+
+				content, err := ioutil.ReadAll(resp.Body)
+				resp.Body.Close()
+
+				if err != nil {
+					time.Sleep(1 * time.Second)
+					continue
+				}
+
+				json_rep := map[string]interface{}{}
+				err = json.Unmarshal(content, &json_rep)
+
+				if err != nil {
+					time.Sleep(1 * time.Second)
+					continue
+				}
+
+				navigateJSONMap(conn, strings.Split(this_url.Host, ".")[0], json_rep)
+				time.Sleep(time.Duration(*interval) * time.Second)
+			}
+		}()
+	}
+
 	for {
-		resp, err := http.Get(*gollector_url)
-
-		if err != nil {
-			time.Sleep(1 * time.Second)
-			continue
-		}
-
-		content, err := ioutil.ReadAll(resp.Body)
-		resp.Body.Close()
-
-		if err != nil {
-			time.Sleep(1 * time.Second)
-			continue
-		}
-
-		json_rep := map[string]interface{}{}
-		err = json.Unmarshal(content, &json_rep)
-
-		if err != nil {
-			time.Sleep(1 * time.Second)
-			continue
-		}
-
-		navigateJSONMap(conn, "localhost", json_rep)
-		time.Sleep(time.Duration(*interval) * time.Second)
+		time.Sleep(1 * time.Hour)
 	}
 }
