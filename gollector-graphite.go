@@ -23,7 +23,6 @@ func formatKey(orig_key, key string) string {
 
 func writeMetric(conn net.Conn, key string, value interface{}) {
 	str := fmt.Sprintf(PLAINTEXT_FORMAT, key, value, time.Now().Unix())
-	fmt.Print(str)
 	conn.Write([]byte(str))
 }
 
