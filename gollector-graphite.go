@@ -15,6 +15,12 @@ import (
 
 const PLAINTEXT_FORMAT = "servers.%s %f %d\n"
 
+func formatKey(orig_key, key string) string {
+	new_key := strings.Replace(orig_key+"."+key, " ", "_", -1)
+	new_key = strings.Replace(new_key, "/", "_", -1)
+	return regexp.MustCompile("[()]").ReplaceAllString(new_key, "")
+}
+
 func writeMetric(conn net.Conn, key string, value interface{}) {
 	str := fmt.Sprintf(PLAINTEXT_FORMAT, key, value, time.Now().Unix())
 	fmt.Print(str)
@@ -41,12 +47,6 @@ func navigateJSONArray(conn net.Conn, key string, array []interface{}) {
 	}
 }
 
-func formatKey(orig_key, key string) string {
-	new_key := strings.Replace(orig_key+"."+key, " ", "_", -1)
-	new_key = strings.Replace(new_key, "/", "_", -1)
-	return regexp.MustCompile("[()]").ReplaceAllString(new_key, "")
-}
-
 func navigateJSONMap(conn net.Conn, orig_key string, json_rep map[string]interface{}) {
 	for key, value := range json_rep {
 		new_key := formatKey(orig_key, key)
@@ -63,6 +63,8 @@ func main() {
 		"http://gollector:gollector@localhost:8000",
 		"Gollector endpoint to read from",
 	)
+
+	interval := flag.Int("interval", 60, "Frequency of poll (in seconds")
 
 	conn, err := net.Dial("tcp", *connect)
 
@@ -95,6 +97,6 @@ func main() {
 		}
 
 		navigateJSONMap(conn, "localhost", json_rep)
-		time.Sleep(1 * time.Minute)
+		time.Sleep(time.Duration(*interval) * time.Second)
 	}
 }
