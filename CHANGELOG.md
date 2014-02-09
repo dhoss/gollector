@@ -1,3 +1,8 @@
+# 0.7.1 (2/8/2014)
+
+* Corrected a bug in fs\_usage percentage: was not accounting for the reserved
+  space root gets.
+
 # 0.7.0 (2/7/2014)
 
 * Graphite support! Via a bridge called `gollector-graphite`, emits stats to
