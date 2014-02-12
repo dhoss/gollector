@@ -3,7 +3,7 @@ all: gollector gstat gollector-graphite
 clean:
 	rm -f gollector gstat gollector-graphite
 
-gollector-graphite: gollector-graphite.go src/*/*/*.go src/*/*.go
+gollector-graphite: gollector-graphite.go
 	GOPATH=$(PWD) go build gollector-graphite.go
 
 gollector: gollector.go src/*/*/*.go src/*/*.go
