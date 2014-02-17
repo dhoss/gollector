@@ -16,7 +16,7 @@ kernel release due to dependence on system structs and other deep voodoo.
 
 Gollector does not need to be run as root to collect its metrics. For things
 that need root, or work with additional data sources (such as data stores),
-check out the sister project [Gollector Monitors](https://github.com/erikh/gollector-monitors).
+check out the sister project [Gollector Monitors](https://github.com/gollector/gollector-monitors).
 
 Gollector also now supports Graphite! `make gollector-graphite` or just `make`
 will build the program, which bridges the two services. Please see the tool's
@@ -52,9 +52,9 @@ Will yield a json object of all current metrics.
 
 ## Wiki
 
-Our [wiki](https://github.com/erikh/gollector/wiki) contains tons of information
-on advanced configuration, usage, and even tools you can use with Gollector.
-Check it out!
+Our [wiki](https://github.com/gollector/gollector/wiki) contains tons of
+information on advanced configuration, usage, and even tools you can use with
+Gollector.  Check it out!
 
 ## License
 
