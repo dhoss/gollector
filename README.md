@@ -30,7 +30,24 @@ usage at the time of writing. The agent can sustain over 8000qps with a
 benchmarking tool like `wrk`, so it will be plenty fine getting hit once per
 minute, or even once per second.
 
-## Quick Start
+## Docker Example
+
+The pre-programmed metrics in the docker image come from `test.json` in this
+repository.
+
+```sh
+docker pull erikh/gollector
+docker run -i -t erikh/gollector:latest
+# wait a few seconds for it to start. the process will block.
+# to get the metrics
+curl http://gollector:gollector@`docker port $(docker ps | grep gollector | awk '{ print $1 }') 8000`
+```
+
+If you're having trouble parsing the metrics with your eyes, piping to `jq .`
+(jq is [here](http://stedolan.github.io/jq/)) can give you a nice, colored,
+pretty printed version.
+
+## Quick Start from Source
 
 In the gollector directory on a Linux machine with kernel 3.0 or better:
 
@@ -48,7 +65,6 @@ $ curl http://gollector:gollector@localhost:8000/
 ```
 
 Will yield a json object of all current metrics.
-
 
 ## Wiki
 
