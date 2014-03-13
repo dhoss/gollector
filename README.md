@@ -7,7 +7,7 @@ as the included 'gstat', which is an n-host iostat-alike for all metrics
 gollector is collecting.
 
 Gollector was birthed by [Triggit](http://www.triggit.com) and still maintained
-on regularly. It is in production on hundreds of machines as of this writing.
+regularly. It is in production on hundreds of machines as of this writing.
 
 Here's a graph generated in Circonus from data provided by Gollector:
 
