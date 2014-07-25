@@ -68,10 +68,11 @@ func Detect() []string {
 func GetMetric(params interface{}, log *logger.Logger) interface{} {
 	info := gm.FSUsage(params.(string))
 
-	return [4]interface{}{
+	return [5]interface{}{
 		info.Free,
 		info.Avail,
 		info.Blocks,
 		info.ReadOnly,
+    info.Percent,
 	}
 }
