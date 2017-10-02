@@ -2,13 +2,14 @@ package io_usage
 
 import (
 	"fmt"
-	gm "github.com/gollector/gollector_metrics"
 	"io/ioutil"
 	"logger"
 	"os"
 	"regexp"
 	"strconv"
 	"strings"
+
+	gm "github.com/gollector/gollector_metrics"
 )
 
 var ioUsage = &gm.IOUsage{}
@@ -47,7 +48,6 @@ func Detect() []string {
 		parts = parts[1:]
 
 		device_type_parsed, err := strconv.ParseUint(parts[gm.LINE_ID], 10, 64)
-
 		if err != nil {
 			fmt.Println("during detection, got error:", err)
 			os.Exit(1)
@@ -57,7 +57,7 @@ func Detect() []string {
 		     for some reason ram disks are detected as well -- figure out why
 				 (or how to parse them)
 		*/
-		if uint(device_type_parsed) == gm.DeviceMap[gm.DEVICE_DISK] || uint(device_type_parsed) == gm.DeviceMap[gm.DEVICE_DM] {
+		if device_type_parsed > 7 {
 			collector = append(collector, parts[gm.LINE_DEVICE])
 		}
 	}
