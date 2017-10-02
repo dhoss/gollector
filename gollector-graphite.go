@@ -25,7 +25,9 @@ func formatKey(orig_key, key string) string {
 
 func writeMetric(conn net.Conn, key string, value interface{}) {
 	str := fmt.Sprintf(PLAINTEXT_FORMAT, key, value, time.Now().Unix())
-	conn.Write([]byte(str))
+	if _, err := conn.Write([]byte(str)); err != nil {
+		panic(err)
+	}
 }
 
 func iterateNav(conn net.Conn, value_type reflect.Type, key string, value interface{}) {
@@ -69,7 +71,6 @@ func main() {
 	}
 
 	conn, err := net.Dial("tcp", *connect)
-
 	if err != nil {
 		panic(err)
 	}
@@ -79,30 +80,28 @@ func main() {
 			for {
 
 				this_url, err := url.Parse(gollector_url)
-
 				if err != nil {
 					panic(err)
 				}
 
 				resp, err := http.Get(gollector_url)
-
 				if err != nil {
+					fmt.Println(err)
 					time.Sleep(1 * time.Second)
 					continue
 				}
 
 				content, err := ioutil.ReadAll(resp.Body)
-				resp.Body.Close()
-
 				if err != nil {
+					fmt.Println(err)
 					time.Sleep(1 * time.Second)
 					continue
 				}
 
 				json_rep := map[string]interface{}{}
 				err = json.Unmarshal(content, &json_rep)
-
 				if err != nil {
+					fmt.Println(err)
 					time.Sleep(1 * time.Second)
 					continue
 				}
@@ -113,7 +112,5 @@ func main() {
 		}()
 	}
 
-	for {
-		time.Sleep(1 * time.Hour)
-	}
+	select {}
 }
