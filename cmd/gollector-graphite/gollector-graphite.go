@@ -61,7 +61,7 @@ func navigateJSONMap(conn net.Conn, orig_key string, json_rep map[string]interfa
 
 func main() {
 	connect := flag.String("connect", "localhost:2003", "Graphite plaintext protocol to emit to")
-	interval := flag.Int("interval", 60, "Frequency of poll (in seconds")
+	interval := flag.Int("interval", 5, "Frequency of poll (in seconds")
 
 	flag.Parse()
 
@@ -106,7 +106,7 @@ func main() {
 					continue
 				}
 
-				navigateJSONMap(conn, strings.Split(this_url.Host, ".")[0], json_rep)
+				navigateJSONMap(conn, strings.Split(strings.Split(this_url.Host, ".")[0], ":")[0], json_rep)
 				time.Sleep(time.Duration(*interval) * time.Second)
 			}
 		}()
